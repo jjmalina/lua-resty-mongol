@@ -176,14 +176,7 @@ function to_bson(ob)
 	end
 
 	local retarray , m = false
-	if onlystring then -- Do string first so the case of an empty table is done properly
-		local r = { }
-        for k , v in pairs ( ob ) do
---ngx.log(ngx.ERR,"="..k..i)
-            t_insert ( r , pack ( k , v ) )
-        end
-		m = t_concat ( r )
-	elseif onlyarray then
+	if onlyarray then -- Do array first so an empty table is an array
 		local r = { }
 
 		local low = 1
@@ -194,6 +187,13 @@ function to_bson(ob)
 
 		m = t_concat ( r , "" , low , high_n )
 		retarray = true
+	elseif onlystring then
+		local r = { }
+        for k , v in pairs ( ob ) do
+--ngx.log(ngx.ERR,"="..k..i)
+            t_insert ( r , pack ( k , v ) )
+        end
+		m = t_concat ( r )
 	else
 		local ni = 1
 		local keys , vals = { } , { }
